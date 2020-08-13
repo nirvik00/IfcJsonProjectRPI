@@ -1,0 +1,80 @@
+<div class="container" id="container-heading">
+    <a href="/">
+        <h4 style="margin-left:20px; padding:10px">IFC JSON Web Project @ RPI</h4>
+    </a>
+        <table style="margin-bottom:10px" id="table-display">
+            <tr>
+                <td>
+                    <div class="dropdown show">
+                        <a class="btn btn-secondary dropdown-toggle mr-3" href="#" role="button" id="dropdownMenuLink"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Elements To Edit
+                        </a>
+
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="mydropdown">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <form method="post" action="/del/{{id}}?_method=DELETE">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="submit" class="btn btn-danger" value="Delete from database">
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="container" id="container-data">
+     <p id="heading">  displaying file: </p>
+    <table id="editTable"></table>
+</div>
+
+<br><br>
+<div id="main3d" class="container3d"></div>
+<script>
+    var decodedJson2 = decodeURIComponent("{{{encodedJson}}}");
+    var decodeJson = JSON.parse(decodedJson2);
+
+    var data = decodeJson['data'];
+    document.getElementById("heading").innerHTML += decodeJson['filename'];
+    var scene3d, camera3d, renderer3d, controls3d;
+    var meshArr = [];
+    var WIDTH=300;
+    var HEIGHT=300;
+    init();
+    draw3d(data);
+
+    data.forEach(obj => {
+        var el = document.createElement("button");
+        el.innerHTML = obj.name;
+        el.className = "dropdown-item";
+        el.addEventListener('click', function () {
+            let div = document.getElementById("editDiv");
+            let tbl = document.getElementById("editTable");
+            while (tbl.hasChildNodes()) {
+                tbl.removeChild(tbl.firstChild);
+            }
+            if (obj['type'] === 'wall') {
+                console.log('wall found');
+            }
+            else if (obj['type'] === 'column') {
+                console.log('column found');
+            }
+            else if (obj['type'] === 'slab') {
+                console.log('slab found');
+            }
+            else{
+                console.log('object definition does not exist')
+            }
+            div.appendChild(tbl);
+            div.style.display = 'block';
+        });
+        var div = document.getElementById("mydropdown");
+        div.appendChild(el);
+    });
+
+
+
+</script>

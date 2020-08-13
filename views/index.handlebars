@@ -1,0 +1,109 @@
+<div class="container" id="container-heading">
+    <a href="/">
+        <h4 style="margin-left:20px; padding:10px">IFC JSON Web Project @ RPI</h4>
+    </a>
+    <form action="/upload" method="POST">
+        <div class="row">
+            <table style="margin-bottom:10px" id="table-elem">
+                <tr>
+                    <td>
+                        <input type="file" id="input" name="file" class="btn btn-block" style="color:white;" />
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Upload File to DB</button>
+                    </td>
+                    <td>
+                        <textarea name="fileContents" id="data" hidden></textarea>
+                    </td>
+                    <td>
+                        <input type="text" value="{{dataEntity}}" id="mydata" hidden>
+                    </td>
+                    <td>
+                        <div class="dropdown show">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Review Uploaded Files
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink" id="mydropdown">
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+
+<br><br>
+
+<div id="container-data" class="container">
+    <p id="heading"> Browse and display file in 3d / Upload to Database / Review
+        Uploaded Files in DB </p>
+    <div id="tableDiv" style="display:none">
+    </div>
+    <div id="main3d" class="container3d" style="display:none"></div>
+</div>
+
+<div id="printJson" style="display:none"></div>
+
+
+<script>
+    // 3d- variables
+    // init.js, draw3d.js, util3d.js
+    var scene3d, camera3d, renderer3d, controls3d;
+    var WIDTH = 300;// window.innerWidth;
+    var HEIGHT = 300;//window.innerHeight
+    var meshArr = [];
+    var data = [];
+    // init();
+    // setInterval(render, 100);
+</script>
+
+
+<script>
+    document.getElementById('input').addEventListener('change', function () {
+        // read the file when it is uploaded
+        // display the 3d-forms
+        var fr = new FileReader();
+        fr.onload = function () {
+            document.getElementById('data').innerHTML = fr.result;
+            document.getElementById('heading').innrHTML = "View the JSON as table with editable fields"
+            var inpStr = fr.result;
+            var jsonObj = JSON.parse(inpStr);
+            init(); // file: init3d.js
+            draw3d(jsonObj); // file: draw3d.js
+            graph(jsonObj);  // file: graph.js
+        }
+        fr.readAsText(this.files[0]);
+    });
+
+</script>
+
+<script>
+    // incoming ALL data from DB-Server 
+    var decodeJson2 = decodeURIComponent("{{{encodedJSON}}}");
+    var decodeJson = JSON.parse(decodeJson2);
+
+    // convert input from app.js to objects
+    // and send to dropdown menu
+    // - navigate to specific file
+    for (keys in decodeJson) {
+        var obj = decodeJson[keys];
+        var dt = new Date(obj['date']).toLocaleString('en-US');
+        var data = obj['data'];
+        addRefToList(obj)
+    }
+    // add data to dropdown menu - navigate to specific file
+    function addRefToList(obj) {
+        var div = document.getElementById("mydropdown");
+        var el = document.createElement("a");
+        var link = document.createTextNode(obj.filename);
+        el.appendChild(link);
+        el.title = obj.filename;
+        el.href = "/display/" + obj._id;
+        el.className = "dropdown-item";
+        div.appendChild(el);
+    }
+
+</script>
