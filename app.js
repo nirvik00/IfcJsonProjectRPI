@@ -19,10 +19,11 @@ app.use('/static', express.static(process.env.PWD + '/static'));
 
 /* -- DB--*/
 // connect to remote db during prod or local db
+var MONGODB_URI="";
 if(process.env.NODE_ENV==='production'){
-    const MONGODB_URI = "mongodb+srv://ns:root@cluster0.wwegb.mongodb.net/IFCJSON?retryWrites=true&w=majority";
+     MONGODB_URI = "mongodb+srv://ns:root@cluster0.wwegb.mongodb.net/IFCJSON?retryWrites=true&w=majority";
 }else{
-    const MONGODB_URI = "mongodb://localhost:27017/IFCJSON";
+     MONGODB_URI = "mongodb://localhost:27017/IFCJSON";
 }
 
 mongoose.connect(MONGODB_URI, {
