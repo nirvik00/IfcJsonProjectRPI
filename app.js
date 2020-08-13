@@ -18,8 +18,12 @@ process.env.PWD = process.cwd();
 app.use('/static', express.static(process.env.PWD + '/static'));
 
 /* -- DB--*/
-const MONGODB_URI = "mongodb+srv://ns:root@cluster0.wwegb.mongodb.net/IFCJSON?retryWrites=true&w=majority";
-// const MONGODB_URI = "mongodb://localhost:27017/IFCJSON";
+// connect to remote db during prod or local db
+if(process.env.NODE_ENV==='production'){
+    const MONGODB_URI = "mongodb+srv://ns:root@cluster0.wwegb.mongodb.net/IFCJSON?retryWrites=true&w=majority";
+}else{
+    const MONGODB_URI = "mongodb://localhost:27017/IFCJSON";
+}
 
 mongoose.connect(MONGODB_URI, {
     useUnifiedTopology: true,
